@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The Android Open-Source Project
+# Copyright (C) 2014 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,19 @@
 ifneq ($(filter jewel evita ville fireball,$(TARGET_DEVICE)),)
 
 LOCAL_PATH := $(call my-dir)
-include $(call all-subdir-makefiles,$(LOCAL_PATH))
 
-# Create a link for the WCNSS config file, which ends up as a writable
-# version in /data/misc/wifi
-$(shell mkdir -p $(TARGET_OUT)/etc/firmware/wlan/prima; \
-    ln -sf /data/misc/wifi/WCNSS_qcom_cfg.ini \
-	    $(TARGET_OUT)/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini)
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := wcnss_htc_client.c
+
+LOCAL_C_INCLUDES += hardware/qcom/wlan/wcnss_service
+LOCAL_CFLAGS += -Wall
+
+LOCAL_SHARED_LIBRARIES := libc libcutils libutils liblog
+
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := libwcnss_qmi
+
+include $(BUILD_SHARED_LIBRARY)
 
 endif
